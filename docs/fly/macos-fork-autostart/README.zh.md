@@ -63,6 +63,43 @@ tail -f "$HOME/Library/Logs/deepseek-harness-web.log"
 
 LaunchAgent 会在登录图形界面后运行；电脑仅从睡眠状态唤醒时不会运行。
 
+## 故障排查
+
+### `@deepseek-ai/dsh-root` 缺少构建入口
+
+构建日志可能以以下错误结束：
+
+```text
+ERROR Error: [@deepseek-ai/dsh-root] Cannot find entry: ["lib/types/{index,invariant,startup}.js"]
+```
+
+这条消息通常不表示根包需要构建入口。tsdown workspace pattern 会匹配 `packages/*/*` 下的包目录。如果上游删除了某个包，但本地构建产物或 `node_modules` 留下一个不含 `package.json` 的目录，tsdown 会向上找到根目录的 `package.json`，将这个残留目录标记为 `@deepseek-ai/dsh-root`，再从没有生成 `lib/types` 的残留目录解析共享入口。
+
+使用以下命令列出缺少 `package.json` 的匹配目录：
+
+```sh
+for dir in vendor/* packages/*/* apps/cli; do
+  if [ -d "$dir" ] && [ ! -f "$dir/package.json" ]; then
+    printf '%s\n' "$dir"
+  fi
+done
+```
+
+清除仓库的安全残留，重新安装依赖并构建：
+
+```sh
+pnpm run clean
+pnpm install
+pnpm run build
+```
+
+已安装的启动脚本会在每次安装和构建前运行 `pnpm run clean`。如果旧版安装副本不含这一步，请重新运行安装器并重启任务：
+
+```sh
+./install.sh /absolute/path/to/deepseek-harness fly0819
+launchctl kickstart -k "gui/$(id -u)/com.fly.deepseek-harness.web"
+```
+
 ## 手动运行
 
 提供两项必需设置后，可以在 launchd 之外运行已安装的可执行文件：

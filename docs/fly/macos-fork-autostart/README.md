@@ -63,6 +63,43 @@ tail -f "$HOME/Library/Logs/deepseek-harness-web.log"
 
 The LaunchAgent runs after graphical login. It does not run when the computer only wakes from sleep.
 
+## Troubleshooting
+
+### `@deepseek-ai/dsh-root` Has No Build Entry
+
+The build log may end with this error:
+
+```text
+ERROR Error: [@deepseek-ai/dsh-root] Cannot find entry: ["lib/types/{index,invariant,startup}.js"]
+```
+
+This message does not normally mean that the root package needs a build entry. The tsdown workspace patterns match package directories under `packages/*/*`. If upstream deletes a package while local build output or `node_modules` leaves its directory behind without a `package.json`, tsdown walks upward to the root `package.json`, labels the stale directory as `@deepseek-ai/dsh-root`, and resolves the shared entry relative to a directory that has no emitted `lib/types`.
+
+List matching directories that have no package manifest:
+
+```sh
+for dir in vendor/* packages/*/* apps/cli; do
+  if [ -d "$dir" ] && [ ! -f "$dir/package.json" ]; then
+    printf '%s\n' "$dir"
+  fi
+done
+```
+
+Remove safe repository residue, reinstall dependencies, and rebuild:
+
+```sh
+pnpm run clean
+pnpm install
+pnpm run build
+```
+
+The installed startup script runs `pnpm run clean` before every install and build. If an older installed copy does not contain that step, rerun the installer and restart the job:
+
+```sh
+./install.sh /absolute/path/to/deepseek-harness fly0819
+launchctl kickstart -k "gui/$(id -u)/com.fly.deepseek-harness.web"
+```
+
 ## Run Manually
 
 The installed executable can run outside launchd when both required settings are provided:
