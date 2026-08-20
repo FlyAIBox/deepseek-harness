@@ -96,6 +96,9 @@ if ! git merge --no-edit origin/master; then
   fail "origin/master conflicts with $WORK_BRANCH; the merge was aborted"
 fi
 
+log "removing stale build output and deleted-package residue"
+pnpm run clean
+
 log "installing dependencies"
 pnpm install
 

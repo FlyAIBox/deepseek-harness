@@ -42,7 +42,7 @@ launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.fly.deepseek-
 3. 从 `origin` 获取 `master` 和工作分支，再获取 `upstream/master`。
 4. 依次通过 `origin/master` 和 `upstream/master` 快进本地 `master`，然后推送到 `origin/master`。
 5. 从同名远程分支快进本地工作分支，并将 `origin/master` 合并到其中，但不推送工作分支。
-6. 运行 `pnpm install` 和 `pnpm run build`。
+6. 运行 `pnpm run clean`、`pnpm install` 和 `pnpm run build`；清理操作会删除陈旧产物和上游已删除包留下的目录。
 7. 运行 `pnpm dsh web`，将其作为 LaunchAgent 的常驻进程。
 
 `master` 只接受快进更新。脚本切换分支后发生失败时，如果 worktree 仍然干净，它会尝试返回配置的工作分支。

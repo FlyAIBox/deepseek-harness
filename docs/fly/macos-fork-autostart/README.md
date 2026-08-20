@@ -42,7 +42,7 @@ At login, the script performs these operations in order:
 3. Fetch `master` and the work branch from `origin`, then fetch `upstream/master`.
 4. Fast-forward local `master` through `origin/master` and `upstream/master`, then push it to `origin/master`.
 5. Fast-forward the local work branch from its matching remote branch and merge `origin/master` into it without pushing the work branch.
-6. Run `pnpm install` and `pnpm run build`.
+6. Run `pnpm run clean`, `pnpm install`, and `pnpm run build`; cleaning removes stale output and directories left by packages deleted upstream.
 7. Run `pnpm dsh web` as the long-lived LaunchAgent process.
 
 Only fast-forward updates are accepted for `master`. If the script fails after switching branches, it attempts to return to the configured work branch when the worktree remains clean.
