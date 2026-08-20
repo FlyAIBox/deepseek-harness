@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.fly.deepseek-harness.web</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/path/to/deepseek-harness-start</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/path/to/deepseek-harness</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>DSH_REPO_DIR</key>
+    <string>/path/to/deepseek-harness</string>
+    <key>DSH_WORK_BRANCH</key>
+    <string>fly0819</string>
+    <key>HOME</key>
+    <string>/Users/example</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+
+  <key>LimitLoadToSessionType</key>
+  <string>Aqua</string>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/example/Library/Logs/deepseek-harness-web.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/example/Library/Logs/deepseek-harness-web.log</string>
+</dict>
+</plist>
