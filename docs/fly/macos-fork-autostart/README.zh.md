@@ -39,8 +39,8 @@ launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.fly.deepseek-
 
 1. worktree 包含已跟踪或未跟踪改动时拒绝运行。
 2. 缺少 `upstream` 时添加 `https://github.com/deepseek-ai/deepseek-harness.git`；现有 `upstream` 指向其他 URL 时拒绝运行。
-3. 从 `origin` 获取 `master` 和工作分支，再获取 `upstream/master`。
-4. 依次通过 `origin/master` 和 `upstream/master` 快进本地 `master`，然后推送到 `origin/master`。
+3. 从 `origin` 获取 `master` 和工作分支，再获取 `upstream/master`。登录网络尚未就绪时，远程操作会重试。
+4. 依次通过 `origin/master` 和 `upstream/master` 快进本地 `master`，然后推送到 `origin/master`；推送使用相同的重试策略。
 5. 从同名远程分支快进本地工作分支，并将 `origin/master` 合并到其中，但不推送工作分支。
 6. 运行 `pnpm run clean`、`pnpm install` 和 `pnpm run build`；清理操作会删除陈旧产物和上游已删除包留下的目录。
 7. 运行 `pnpm dsh web`，将其作为 LaunchAgent 的常驻进程。
@@ -64,6 +64,25 @@ tail -f "$HOME/Library/Logs/deepseek-harness-web.log"
 LaunchAgent 会在登录图形界面后运行；电脑仅从睡眠状态唤醒时不会运行。
 
 ## 故障排查
+
+### 登录时 GitHub SSH 不可用
+
+图形界面登录后不久，日志可能出现以下错误：
+
+```text
+ssh: connect to host github.com port 22: Undefined error: 0
+```
+
+这表示 LaunchAgent 已经启动，但首次连接 GitHub SSH 时登录网络尚未就绪，不能据此判断 macOS 未加载 LaunchAgent。脚本默认会对每次远程获取和推送最多尝试 12 次，每次间隔 10 秒。可以在 LaunchAgent 环境中设置 `DSH_NETWORK_ATTEMPTS` 和 `DSH_NETWORK_RETRY_SECONDS` 来调整这些限制。
+
+如果所有尝试均失败，请确认 GitHub SSH 可访问，再重新启动已加载的任务：
+
+```sh
+ssh -T git@github.com
+launchctl kickstart -k "gui/$(id -u)/com.fly.deepseek-harness.web"
+```
+
+由于 GitHub 不提供 shell 访问，显示 SSH 认证欢迎语后可能仍返回非零状态。请检查消息，再跟踪日志以确认同步已恢复。
 
 ### `@deepseek-ai/dsh-root` 缺少构建入口
 

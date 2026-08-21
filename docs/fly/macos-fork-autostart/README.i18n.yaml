@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/fly/macos-fork-autostart/README.md
-README.md: 0e2a545d0b5cabd2311bc8906de3750b5f18649f
-README.zh.md: d1be4d128335cb5e3b31ef7c2bd331149ce1ddd7
+README.md: 5169f18261fa0c5a912118e8e10a7003a80ecc02
+README.zh.md: 3114148a0ee649592766c1bc65cad100c4f9befc

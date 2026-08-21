@@ -39,8 +39,8 @@ At login, the script performs these operations in order:
 
 1. Refuse to run if the worktree contains tracked or untracked changes.
 2. Add `upstream` for `https://github.com/deepseek-ai/deepseek-harness.git` when it is absent, or reject an existing `upstream` with another URL.
-3. Fetch `master` and the work branch from `origin`, then fetch `upstream/master`.
-4. Fast-forward local `master` through `origin/master` and `upstream/master`, then push it to `origin/master`.
+3. Fetch `master` and the work branch from `origin`, then fetch `upstream/master`. Remote operations retry when the login network is not ready.
+4. Fast-forward local `master` through `origin/master` and `upstream/master`, then push it to `origin/master`; the push uses the same retry policy.
 5. Fast-forward the local work branch from its matching remote branch and merge `origin/master` into it without pushing the work branch.
 6. Run `pnpm run clean`, `pnpm install`, and `pnpm run build`; cleaning removes stale output and directories left by packages deleted upstream.
 7. Run `pnpm dsh web` as the long-lived LaunchAgent process.
@@ -64,6 +64,25 @@ tail -f "$HOME/Library/Logs/deepseek-harness-web.log"
 The LaunchAgent runs after graphical login. It does not run when the computer only wakes from sleep.
 
 ## Troubleshooting
+
+### GitHub SSH Is Unavailable at Login
+
+The log may show this error shortly after graphical login:
+
+```text
+ssh: connect to host github.com port 22: Undefined error: 0
+```
+
+This means the LaunchAgent started, but the first GitHub SSH connection ran before the login network was ready. It is not evidence that macOS failed to load the LaunchAgent. The script retries each remote fetch and push up to 12 times by default, with 10 seconds between attempts. Set `DSH_NETWORK_ATTEMPTS` and `DSH_NETWORK_RETRY_SECONDS` in the LaunchAgent environment to change those limits.
+
+If every attempt fails, confirm that GitHub SSH is reachable and restart the loaded job:
+
+```sh
+ssh -T git@github.com
+launchctl kickstart -k "gui/$(id -u)/com.fly.deepseek-harness.web"
+```
+
+GitHub may return a nonzero status after the SSH authentication greeting because it does not provide shell access. Inspect the message, then follow the log to confirm that synchronization resumes.
 
 ### `@deepseek-ai/dsh-root` Has No Build Entry
 

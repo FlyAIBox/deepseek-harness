@@ -8,6 +8,8 @@ readonly REPO_DIR="$DSH_REPO_DIR"
 readonly WORK_BRANCH="${DSH_WORK_BRANCH:-fly0819}"
 readonly UPSTREAM_URL="${DSH_UPSTREAM_URL:-https://github.com/deepseek-ai/deepseek-harness.git}"
 readonly LOCK_DIR="${TMPDIR:-/tmp}/deepseek-harness-start-${UID}.lock"
+readonly NETWORK_ATTEMPTS="${DSH_NETWORK_ATTEMPTS:-12}"
+readonly NETWORK_RETRY_SECONDS="${DSH_NETWORK_RETRY_SECONDS:-10}"
 
 log() {
   printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"
@@ -53,8 +55,29 @@ acquire_lock() {
   printf '%s\n' "$$" >"$LOCK_DIR/pid"
 }
 
+retry_network_command() {
+  local description="$1"
+  shift
+  local attempt=1
+
+  until "$@"; do
+    if ((attempt >= NETWORK_ATTEMPTS)); then
+      fail "$description failed after $NETWORK_ATTEMPTS attempts"
+    fi
+
+    log "$description failed on attempt $attempt/$NETWORK_ATTEMPTS; retrying in ${NETWORK_RETRY_SECONDS}s"
+    attempt=$((attempt + 1))
+    sleep "$NETWORK_RETRY_SECONDS"
+  done
+}
+
 acquire_lock
 trap cleanup EXIT
+
+[[ "$NETWORK_ATTEMPTS" =~ ^[1-9][0-9]*$ ]] ||
+  fail "DSH_NETWORK_ATTEMPTS must be a positive integer"
+[[ "$NETWORK_RETRY_SECONDS" =~ ^[0-9]+$ ]] ||
+  fail "DSH_NETWORK_RETRY_SECONDS must be a non-negative integer"
 
 cd "$REPO_DIR"
 log "starting DeepSeek Harness fork synchronization"
@@ -77,8 +100,8 @@ else
 fi
 
 log "fetching origin and upstream"
-git fetch --prune origin master "$WORK_BRANCH"
-git fetch --prune upstream master
+retry_network_command "fetching origin" git fetch --prune origin master "$WORK_BRANCH"
+retry_network_command "fetching upstream" git fetch --prune upstream master
 
 log "fast-forwarding master from origin and upstream"
 git switch master
@@ -86,7 +109,7 @@ git merge --ff-only origin/master
 git merge --ff-only upstream/master
 
 log "pushing synchronized master to the fork"
-git push origin master:master
+retry_network_command "pushing synchronized master to origin" git push origin master:master
 
 log "merging origin/master into $WORK_BRANCH"
 git switch "$WORK_BRANCH"
