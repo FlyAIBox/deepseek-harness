@@ -1,0 +1,102 @@
+{
+  "generated_at": "2026-08-24T03:33:18.139261+00:00",
+  "nodes": {
+    "core_session_src_types_sessionid": {
+      "code_fingerprint": "",
+      "label": "SessionId",
+      "last": "2026-08-24T01:36:10.191291+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-24T01:36:10.191291+00:00",
+          "outcome": "useful",
+          "q": "为什么 SessionId 是跨社区桥接节点？"
+        }
+      ],
+      "score": 0.998122366,
+      "source_file": "core/session/src/types.ts",
+      "status": "tentative",
+      "uses": 1
+    },
+    "experimental_agent_team_src_fold_teamfoldstate": {
+      "code_fingerprint": "",
+      "label": "TeamFoldState",
+      "last": "2026-08-24T01:36:10.191291+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-24T01:36:10.191291+00:00",
+          "outcome": "useful",
+          "q": "为什么 SessionId 是跨社区桥接节点？"
+        }
+      ],
+      "score": 0.998122366,
+      "source_file": "experimental/agent-team/src/fold.ts",
+      "status": "tentative",
+      "uses": 1
+    },
+    "session_query_session_query_src_index_sessionqueryengine": {
+      "code_fingerprint": "",
+      "label": "SessionQueryEngine",
+      "last": "2026-08-24T01:36:10.191291+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-24T01:36:10.191291+00:00",
+          "outcome": "useful",
+          "q": "为什么 SessionId 是跨社区桥接节点？"
+        }
+      ],
+      "score": 0.998122366,
+      "source_file": "session-query/session-query/src/index.ts",
+      "status": "tentative",
+      "uses": 1
+    },
+    "session_session_persistence_src_coordinator_persistencecoordinator": {
+      "code_fingerprint": "",
+      "label": "PersistenceCoordinator",
+      "last": "2026-08-24T01:36:10.191291+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-24T01:36:10.191291+00:00",
+          "outcome": "useful",
+          "q": "为什么 SessionId 是跨社区桥接节点？"
+        }
+      ],
+      "score": 0.998122366,
+      "source_file": "session/session-persistence/src/coordinator.ts",
+      "status": "tentative",
+      "uses": 1
+    },
+    "session_session_projection_cache_src_index_sessionprojectioncache": {
+      "code_fingerprint": "",
+      "label": "SessionProjectionCache",
+      "last": "2026-08-24T01:36:10.191291+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-24T01:36:10.191291+00:00",
+          "outcome": "useful",
+          "q": "为什么 SessionId 是跨社区桥接节点？"
+        }
+      ],
+      "score": 0.998122366,
+      "source_file": "session/session-projection-cache/src/index.ts",
+      "status": "tentative",
+      "uses": 1
+    },
+    "workflow_tool_workflow_src_types_toolworkflowagentstartdata": {
+      "code_fingerprint": "",
+      "label": "ToolWorkflowAgentStartData",
+      "last": "2026-08-24T01:36:10.191291+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-24T01:36:10.191291+00:00",
+          "outcome": "useful",
+          "q": "为什么 SessionId 是跨社区桥接节点？"
+        }
+      ],
+      "score": 0.998122366,
+      "source_file": "workflow/tool-workflow/src/types.ts",
+      "status": "tentative",
+      "uses": 1
+    }
+  },
+  "version": 1
+}
