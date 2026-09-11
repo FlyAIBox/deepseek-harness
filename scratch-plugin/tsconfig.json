@@ -4,7 +4,8 @@
     "composite": false,
     "noEmit": true,
     "paths": {
-      "@deepseek-ai/cordis": ["../vendor/cordis/lib/types/index.d.ts"]
+      "@deepseek-ai/cordis": ["../vendor/cordis/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-tools": ["../packages/core/tools"]
     }
   },
   "include": ["src/**/*.ts"]

@@ -1,0 +1,5 @@
+- insert:
+    # 保持：沿用第九节的稳定配置行 id，后续覆盖仍然可以按 hello 定位。
+    - id: hello
+      # 修改：第九节是 dsh-hello-plugin；发布 scoped package 后必须同步包名。
+      name: '@flyaibox/dsh-hello-plugin'
